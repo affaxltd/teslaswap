@@ -10,7 +10,6 @@ import React, {
 } from "react";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { animated, useTransition } from "react-spring";
-import { darkColor, getColor } from "../style/constants/color";
 
 import Card from "../components/base/Card";
 import { Divider } from "../components/base/Divider";
@@ -21,9 +20,9 @@ import { Text } from "../components/base/Text";
 import Vertical from "../components/base/Vertical";
 import { createPortal } from "react-dom";
 import { ethers } from "ethers";
+import { getColor } from "../style/constants/color";
 import { providers } from "../lib/web3/providers";
 import { px } from "../style/helpers/measurements";
-import { radius } from "../style/constants/measurements";
 import { springConfig } from "../style/constants/spring";
 import styled from "styled-components";
 import { text } from "../style/themes/theme";
