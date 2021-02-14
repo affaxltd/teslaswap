@@ -21,6 +21,7 @@ interface TextProps extends SizeProps {
   lineHeight?: number;
   uppercase?: boolean;
   clickable?: boolean;
+  anywrap?: boolean;
 }
 
 const map = sizeMap("medium", px, 12, 16, 20);
@@ -46,6 +47,9 @@ function Textify<T extends TType>(t: ThemedStyledFunction<T, any, {}, never>) {
         overflow: hidden;
       `
         : ""};
+
+    ${(props) => (props.anywrap ? "overflow-wrap: anywhere" : "")};
+
     ${(props) => (props.uppercase ? "text-transform: uppercase" : "")};
     font-weight: ${(props) => (props.thicc ? 700 : props.bold ? 600 : 400)};
     font-size: ${map};

@@ -1,14 +1,16 @@
-import { largeShadow } from "../../style/constants/shadow";
-import { secondaryBg } from "../../style/themes/theme";
+import { secondaryBg, text } from "../../style/themes/theme";
+
+import { memeShadow } from "../../style/constants/shadow";
 import styled from "styled-components";
 
 const Card = styled.div`
   width: 100%;
   box-sizing: border-box;
   padding: 2rem;
-  border-radius: 1rem;
   background-color: ${secondaryBg};
-  box-shadow: ${largeShadow};
+  border: ${text} 3px solid;
+  box-shadow: ${memeShadow};
+  z-index: 10;
 `;
 
 export default Card;

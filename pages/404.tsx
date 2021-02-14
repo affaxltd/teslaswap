@@ -2,6 +2,7 @@ import { H1Text, Text } from "../src/components/base/Text";
 
 import Button from "../src/components/base/Button";
 import Container from "../src/components/base/Container";
+import Head from "next/head";
 import Horizontal from "../src/components/base/Horizontal";
 import Link from "next/link";
 import Vertical from "../src/components/base/Vertical";
@@ -31,6 +32,10 @@ const Content = styled.div`
 
 const FourOhFour = () => (
   <>
+    <Head>
+      <title>Page Not Found</title>
+    </Head>
+
     <BackroundHolder>
       <Vertical>
         <BackroundText contrast color="transparent" justify="center">

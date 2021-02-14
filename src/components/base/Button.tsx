@@ -3,7 +3,6 @@ import { SizeProps, rem, sizeMap, sizeNoMap } from "../../style/helpers/measurem
 
 import { Icon } from "../../types/icon";
 import { StyleFunction } from "../../style";
-import { radius } from "../../style/constants/measurements";
 import styled from "styled-components";
 import { text } from "../../style/themes/theme";
 
@@ -13,11 +12,11 @@ interface ButtonProps extends SizeProps {
   color?: Colors;
   textColor?: Colors;
   textColorHex?: string;
-  radius?: number;
   active?: boolean;
   justify?: Justify;
   fullWidth?: boolean;
   inactive?: boolean;
+  disableBorder?: boolean;
 }
 
 interface IconProps extends SizeProps {
@@ -54,12 +53,17 @@ const Button = styled.button<ButtonProps>`
 
   ${(props) => (props.fullWidth ? "width: 100%" : "")};
 
-  border-radius: ${(props) => (props.radius ? rem(props.radius) : radius(props))};
   font-weight: 500;
   padding: ${paddingMap};
   font-size: ${fontSizeMap};
   line-height: ${lineHeightMap};
   height: ${heightMap};
+
+  ${(props) =>
+    props.disableBorder
+      ? ""
+      : `border: ${(props.inactive ? darkColor("transparent") : text)(props)} 3px
+    solid;`};
 
   &:hover {
     background: ${(props) =>

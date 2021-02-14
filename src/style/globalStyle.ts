@@ -1,5 +1,6 @@
 import { color } from "./constants/color";
 import { createGlobalStyle } from "styled-components";
+import { primaryBg } from "./themes/theme";
 
 export const GlobalStyles = createGlobalStyle`
   * {
@@ -13,6 +14,11 @@ export const GlobalStyles = createGlobalStyle`
 
   body > img {
     display: none;
+  }
+
+  html {
+    
+  background: ${primaryBg};
   }
 
   #nprogress .bar {

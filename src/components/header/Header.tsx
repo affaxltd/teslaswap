@@ -2,9 +2,7 @@ import Container from "../base/Container";
 import { Divider } from "../base/Divider";
 import Link from "next/link";
 import React from "react";
-import ThemeSwitch from "./ThemeSwitch";
 import WalletButton from "./WalletButton";
-import { siteName } from "../../data/site";
 import styled from "styled-components";
 import { text } from "../../style/themes/theme";
 
@@ -20,22 +18,22 @@ const HeaderWrapper = styled.div`
 
 const Title = styled.p`
   display: flex;
-  cursor: pointer;
   color: ${text};
   font-weight: 700;
   font-size: 2rem;
   line-height: 3.25rem;
   background: transparent;
   border: none;
+  cursor: pointer;
 
   &:focus {
     outline: none;
   }
 `;
 
-const ButtonTray = styled.div`
-  display: flex;
-  flex-direction: row-reverse;
+const Logo = styled.img`
+  width: 3.25rem;
+  height: 3.25rem;
 `;
 
 const Header = () => (
@@ -43,16 +41,14 @@ const Header = () => (
     <Container>
       <HeaderWrapper>
         <Link href="/">
-          <Title>{siteName}</Title>
+          <Title>
+            <Logo src="/logo/Logo.png" alt="" />
+            <Divider size={0.5} />
+            Stonks
+          </Title>
         </Link>
 
-        <ButtonTray>
-          <ThemeSwitch />
-
-          <Divider size={0.75} />
-
-          <WalletButton />
-        </ButtonTray>
+        <WalletButton />
       </HeaderWrapper>
     </Container>
   </Head>

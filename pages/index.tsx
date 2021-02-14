@@ -1,7 +1,6 @@
 import { ArrowCircleUpOutline, ArrowDown } from "heroicons-react";
 import { H1Text, H3Text, HugeText, Span, Text } from "../src/components/base/Text";
 import { SentTransaction, useERC20Abi, useTeslaAbi } from "../src/lib/web3/contract";
-import { color, darkColor } from "../src/style/constants/color";
 import {
   teslaContract,
   teslaTokenAddress,
@@ -16,10 +15,13 @@ import Cleave from "cleave.js/react";
 import Container from "../src/components/base/Container";
 import { Divider } from "../src/components/base/Divider";
 import { Flex } from "../src/components/base/Flex";
+import Head from "next/head";
 import IconC from "../src/components/base/Icon";
 import Spinner from "../src/components/base/Spinner";
+import { color } from "../src/style/constants/color";
 import { ethers } from "ethers";
 import { link } from "../src/lib/tools/link";
+import { memeShadow } from "../src/style/constants/shadow";
 import styled from "styled-components";
 import { text } from "../src/style/themes/theme";
 import { useInput } from "../src/lib/tools/text";
@@ -47,15 +49,15 @@ const InputContainer = styled.div<{ selected: boolean; error: boolean }>`
         ? color("red")(props)
         : props.selected
         ? color("theme")(props)
-        : darkColor("transparent")(props)}
+        : color("text")(props)}
     solid;
-  border-radius: 1rem;
+  box-shadow: ${memeShadow};
 `;
 
 const OutputContainer = styled.div`
-  border: 3px ${darkColor("transparent")} solid;
+  border: 3px ${color("text")} solid;
   padding: 1.25rem;
-  border-radius: 1rem;
+  box-shadow: ${memeShadow};
 `;
 
 const ConfirmationModal = useModal<{
@@ -348,231 +350,230 @@ const Index = () => {
   const balancerHigher = balancerOut > synthetixOut;
 
   const isAbove =
-    ethers.utils.parseUnits(amount === "" ? "0" : amount, 6).toNumber() >
+    parseInt(ethers.utils.parseUnits(amount === "" ? "0" : amount, 6).toString()) >
     parseInt(usdcBalance.toString());
 
   return (
-    <ConfirmationModal
-      header="Confirm"
-      width={400}
-      usdc={amount === "" ? 0 : parseFloat(amount)}
-      tesla={balancerHigher ? balancerOut : synthetixOut}
-      useBalancer={balancerHigher}
-    >
-      {({ setState }) => (
-        <Container noPadding maxWidth={800}>
-          <Divider size={5} vertical />
+    <>
+      <Head>
+        <title>Stonk Swapper</title>
+      </Head>
 
-          <H1Text large thicc justify="center">
-            Swap USDC to sTSLA
-          </H1Text>
+      <ConfirmationModal
+        header="Confirm"
+        width={400}
+        usdc={amount === "" ? 0 : parseFloat(amount)}
+        tesla={balancerHigher ? balancerOut : synthetixOut}
+        useBalancer={balancerHigher}
+      >
+        {({ setState }) => (
+          <Container maxWidth={800}>
+            <Divider size={2} vertical />
 
-          <H3Text contrast justify="center" bold small>
-            Quickly trade your boring USDC to spicy hot sTSLA, a Synthetix Synth for Tesla
-            stocks!
-          </H3Text>
+            <H1Text large thicc justify="center">
+              Swap USDC to sTSLA
+            </H1Text>
 
-          <Divider size={6} vertical />
+            <H3Text contrast justify="center" bold small>
+              Quickly trade your boring USDC to spicy hot sTSLA, a Synthetix Synth for
+              Tesla stocks!
+            </H3Text>
 
-          <Container noPadding maxWidth={450}>
-            <Card>
-              <InputContainer selected={selected} error={isAbove}>
-                <Flex justify="space-between">
-                  <div>
-                    <HugeText bold small>
-                      Input
-                    </HugeText>
-                  </div>
+            <Divider size={6} vertical />
 
-                  <div>
-                    <Text
-                      bold
-                      contrast
-                      flex
-                      justify="flex-end"
-                      clickable
-                      onClick={() => {
-                        if (usdcBalance === "...") return;
-                        setAmount(
-                          parseFloat(ethers.utils.formatUnits(usdcBalance, 6)).toFixed(6)
-                        );
-                      }}
-                    >
-                      Balance:
-                      <Divider size={0.5} />
-                      {usdcBalance === "..." ? (
-                        <>
+            <Container noPadding maxWidth={450}>
+              <Card>
+                <InputContainer selected={selected} error={isAbove}>
+                  <Flex justify="space-between">
+                    <div>
+                      <HugeText bold small>
+                        Input
+                      </HugeText>
+                    </div>
+
+                    <div>
+                      <Text
+                        bold
+                        contrast
+                        clickable
+                        justify="right"
+                        onClick={() => {
+                          if (usdcBalance === "...") return;
+                          setAmount(
+                            parseFloat(ethers.utils.formatUnits(usdcBalance, 6)).toFixed(
+                              6
+                            )
+                          );
+                        }}
+                      >
+                        <Divider size={0.5} />
+                        {usdcBalance === "..." ? (
                           <Spinner color="text" size={18} />
-                          <Divider size={0.5} />
-                        </>
-                      ) : (
-                        `${parseFloat(ethers.utils.formatUnits(usdcBalance, 6)).toFixed(
-                          6
-                        )} `
-                      )}
-                      USDC
+                        ) : (
+                          `Balance: ${parseFloat(
+                            ethers.utils.formatUnits(usdcBalance, 6)
+                          ).toFixed(6)} USDC`
+                        )}
+                      </Text>
+                    </div>
+                  </Flex>
+
+                  <Divider size={1} vertical />
+
+                  <Input
+                    aria-label="investment"
+                    placeholder="0.00"
+                    options={{
+                      numeral: true,
+                      numeralThousandsGroupStyle: "none",
+                      numeralDecimalScale: 6,
+                    }}
+                    value={amount}
+                    onChange={useInput(
+                      setAmount,
+                      (v) => !v.includes("-") && !(v.length === 1 && v === ".")
+                    )}
+                    onSelect={() => setSelected(true)}
+                    onBlur={() => setSelected(false)}
+                  />
+                </InputContainer>
+
+                {isAbove && (
+                  <>
+                    <Divider size={0.5} vertical />
+
+                    <Text color="red" bold>
+                      Not enough tokens
                     </Text>
-                  </div>
+                  </>
+                )}
+
+                <Divider size={1.5} vertical />
+
+                <Flex justify="center">
+                  <IconC icon={ArrowDown} color="text" size={24} />
                 </Flex>
 
-                <Divider size={1} vertical />
+                <Divider size={1.5} vertical />
 
-                <Input
-                  aria-label="investment"
-                  placeholder="0.00"
-                  options={{
-                    numeral: true,
-                    numeralThousandsGroupStyle: "none",
-                    numeralDecimalScale: 6,
-                  }}
-                  value={amount}
-                  onChange={useInput(
-                    setAmount,
-                    (v) => !v.includes("-") && !(v.length === 1 && v === ".")
-                  )}
-                  onSelect={() => setSelected(true)}
-                  onBlur={() => setSelected(false)}
-                />
-              </InputContainer>
+                <OutputContainer>
+                  <Flex justify="space-between">
+                    <div>
+                      <HugeText thicc small>
+                        Output
+                      </HugeText>
+                    </div>
 
-              {isAbove && (
-                <>
+                    <div>
+                      <Text bold contrast justify="right">
+                        <Divider size={0.5} />
+                        {tslaBalance === "..." ? (
+                          <Spinner color="text" size={18} />
+                        ) : (
+                          `Balance: ${parseFloat(
+                            ethers.utils.formatUnits(tslaBalance, 18)
+                          ).toFixed(6)} sTSLA`
+                        )}
+                      </Text>
+                    </div>
+                  </Flex>
+
                   <Divider size={0.5} vertical />
 
-                  <Text color="red" bold>
-                    Not enough tokens
-                  </Text>
-                </>
-              )}
+                  {(!connected || isZero) && (
+                    <div>
+                      <Divider size={0.8125} vertical />
+                      <Spinner color="text" size={40} />
+                      <Divider size={0.8125} vertical />
+                    </div>
+                  )}
 
-              <Divider size={1.5} vertical />
-
-              <Flex justify="center">
-                <IconC icon={ArrowDown} color="text" size={24} />
-              </Flex>
-
-              <Divider size={1.5} vertical />
-
-              <OutputContainer>
-                <Flex justify="space-between">
-                  <div>
-                    <HugeText thicc small>
-                      Output
+                  {connected && !isZero && (
+                    <HugeText large thicc>
+                      {amount === "" || parseFloat(amount) <= 0
+                        ? "0"
+                        : (balancerHigher ? balancerOut : synthetixOut).toFixed(4)}
                     </HugeText>
-                  </div>
+                  )}
 
-                  <div>
-                    <Text bold contrast flex justify="flex-end">
-                      Balance:
-                      <Divider size={0.5} />
-                      {tslaBalance === "..." ? (
-                        <>
-                          <Spinner color="text" size={18} />
-                          <Divider size={0.5} />
-                        </>
-                      ) : (
-                        `${parseFloat(ethers.utils.formatUnits(tslaBalance, 18)).toFixed(
-                          6
-                        )} `
-                      )}
-                      sTSLA
-                    </Text>
-                  </div>
-                </Flex>
+                  <Divider size={0.5} vertical />
 
-                <Divider size={0.5} vertical />
+                  <Text contrast large bold>
+                    Best price from{" "}
+                    <Span
+                      color="theme"
+                      onClick={() => {
+                        if (isZero) return;
+                        link(
+                          balancerHigher
+                            ? "https://balancer.exchange/#/swap"
+                            : "https://www.synthetix.io/"
+                        )();
+                      }}
+                      link={!isZero}
+                    >
+                      {isZero ? "..." : balancerHigher ? "Balancer" : "Synthetix"}
+                    </Span>
+                  </Text>
+                </OutputContainer>
 
-                {(!connected || isZero) && (
-                  <div>
-                    <Divider size={0.8125} vertical />
-                    <Spinner color="text" size={40} />
-                    <Divider size={0.8125} vertical />
-                  </div>
-                )}
+                <Divider size={2} vertical />
 
-                {connected && !isZero && (
-                  <HugeText large thicc>
-                    {amount === "" || parseFloat(amount) <= 0
-                      ? "0"
-                      : (balancerHigher ? balancerOut : synthetixOut).toFixed(4)}
-                  </HugeText>
-                )}
+                <Button
+                  fullWidth
+                  onClick={() => {
+                    if (!connected) return open();
 
-                <Divider size={0.5} vertical />
+                    if (
+                      approving ||
+                      isAbove ||
+                      (connected && (isZero || amount === "" || parseFloat(amount) <= 0))
+                    )
+                      return;
 
-                <Text contrast large bold>
-                  Best price from{" "}
-                  <Span
-                    color="theme"
-                    onClick={() => {
-                      if (isZero) return;
-                      link(
-                        balancerHigher
-                          ? "https://balancer.exchange/#/swap"
-                          : "https://www.synthetix.io/"
-                      )();
-                    }}
-                    link={!isZero}
-                  >
-                    {isZero ? "..." : balancerHigher ? "Balancer" : "Synthetix"}
-                  </Span>
-                </Text>
-              </OutputContainer>
+                    if (!approved) return approve();
 
-              <Divider size={2} vertical />
-
-              <Button
-                fullWidth
-                onClick={() => {
-                  if (!connected) return open();
-
-                  if (
+                    setState(true);
+                  }}
+                  disabled={
                     approving ||
                     isAbove ||
                     (connected && (isZero || amount === "" || parseFloat(amount) <= 0))
-                  )
-                    return;
+                  }
+                  inactive={
+                    approving ||
+                    isAbove ||
+                    (connected && (isZero || amount === "" || parseFloat(amount) <= 0))
+                  }
+                >
+                  {!connected ? (
+                    "Connect Wallet"
+                  ) : approving ? (
+                    <Spinner color={approving ? "text" : "white"} size={24} />
+                  ) : !approved ? (
+                    "Approve Swap"
+                  ) : (
+                    "Swap!"
+                  )}
+                </Button>
 
-                  if (!approved) return approve();
+                {errorMsg && (
+                  <>
+                    <Divider size={0.75} vertical />
 
-                  setState(true);
-                }}
-                disabled={
-                  approving ||
-                  isAbove ||
-                  (connected && (isZero || amount === "" || parseFloat(amount) <= 0))
-                }
-                inactive={
-                  approving ||
-                  isAbove ||
-                  (connected && (isZero || amount === "" || parseFloat(amount) <= 0))
-                }
-              >
-                {!connected ? (
-                  "Connect Wallet"
-                ) : approving ? (
-                  <Spinner color={approving ? "text" : "white"} size={24} />
-                ) : !approved ? (
-                  "Approve Swap"
-                ) : (
-                  "Swap!"
+                    <Text color="red" bold>
+                      {errorMsg}
+                    </Text>
+                  </>
                 )}
-              </Button>
+              </Card>
+            </Container>
 
-              {errorMsg && (
-                <>
-                  <Divider size={0.75} vertical />
-
-                  <Text color="red" bold>
-                    {errorMsg}
-                  </Text>
-                </>
-              )}
-            </Card>
+            <Divider size={2} vertical />
           </Container>
-        </Container>
-      )}
-    </ConfirmationModal>
+        )}
+      </ConfirmationModal>
+    </>
   );
 };
 

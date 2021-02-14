@@ -8,14 +8,12 @@ import React, {
 } from "react";
 import { animated, useTransition } from "react-spring";
 
+import Card from "./Card";
 import { Divider } from "./Divider";
-import Horizontal from "./Horizontal";
 import { Text } from "./Text";
 import Vertical from "./Vertical";
 import { X } from "heroicons-react";
 import { createPortal } from "react-dom";
-import { largeShadow } from "../../style/constants/shadow";
-import { primaryBg } from "../../style/themes/theme";
 import { px } from "../../style/helpers/measurements";
 import { springConfig } from "../../style/constants/spring";
 import styled from "styled-components";
@@ -32,17 +30,11 @@ const ModalHolder = styled(animated.div)`
   transition: none;
 `;
 
-const ModalCard = styled(Horizontal)<{ width: number }>`
+const ModalCard = styled(Card)<{ width: number }>`
   position: relative;
-  background: ${primaryBg};
-  box-shadow: ${largeShadow};
-  border-radius: 1rem;
   width: 100%;
   max-width: ${(props) => px(props.width)};
-`;
-
-const ModalContent = styled.div`
-  padding: 1.5rem;
+  margin: 0 auto;
 `;
 
 const ExitHolder = styled.div`
@@ -114,31 +106,32 @@ export const useModal = <T extends unknown>(
                         {!disableX && (
                           <ExitHolder>
                             <Button
-                              radius={1}
                               color="transparent"
                               onClick={() => {
                                 setOpen(false);
                               }}
+                              disableBorder
                             >
                               <XIcon crossOrigin="" path="" />
                             </Button>
                           </ExitHolder>
                         )}
-                        <ModalContent>
-                          {header && (
-                            <>
-                              <Text large>{header}</Text>
-                              <Divider size={1} vertical />
-                            </>
-                          )}
 
-                          <Component
-                            close={() => {
-                              setOpen(false);
-                            }}
-                            {...prop}
-                          />
-                        </ModalContent>
+                        {header && (
+                          <>
+                            <Text large bold>
+                              {header}
+                            </Text>
+                            <Divider size={1} vertical />
+                          </>
+                        )}
+
+                        <Component
+                          close={() => {
+                            setOpen(false);
+                          }}
+                          {...prop}
+                        />
                       </ModalCard>
                     </Vertical>
                   </ModalHolder>
