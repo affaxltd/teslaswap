@@ -1,5 +1,6 @@
 import {
   CContract,
+  SentTransaction,
   UseContract,
   useDelegatorAbi,
   useERC20Abi,
@@ -34,6 +35,7 @@ export const useApprovalWatch = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const { library, error } = useWeb3();
   const contract = useDelegatorAbi(delegateContract, library?.getSigner());
+  const [tx, setTx] = useState<SentTransaction | null>();
 
   const { value, run } = useContractFunction(
     delegateContract,
@@ -48,6 +50,7 @@ export const useApprovalWatch = () => {
     approved: value,
     approving,
     errorMsg,
+    tx,
     approve: async () => {
       if (error || !contract || approving || !run) return;
 
@@ -56,6 +59,7 @@ export const useApprovalWatch = () => {
         setErrorMsg(null);
 
         const tx = await contract.approveExchangeOnBehalf(teslaContract);
+        setTx(tx);
         await tx.wait();
         await run();
       } catch (e) {
@@ -73,6 +77,7 @@ export const useApprovalWatch = () => {
         setErrorMsg(msg);
       } finally {
         setApproving(false);
+        setTx(null);
       }
     },
   };

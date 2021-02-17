@@ -3,9 +3,8 @@ import { text } from "../../style/themes/theme";
 
 const WaveSVG = styled.svg`
   position: fixed;
-  left: 0;
+  height: 25vh;
   bottom: 0;
-  right: 0;
   z-index: -1;
   opacity: 0.25;
 

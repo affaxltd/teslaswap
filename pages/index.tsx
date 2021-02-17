@@ -2,8 +2,11 @@ import { ArrowCircleUpOutline, ArrowDown } from "heroicons-react";
 import { H1Text, H3Text, HugeText, Span, Text } from "../src/components/base/Text";
 import { SentTransaction, useERC20Abi, useTeslaAbi } from "../src/lib/web3/contract";
 import {
+  chainID,
+  etherscan,
   teslaContract,
   teslaTokenAddress,
+  usdcDecimals,
   usdcTokenAddress,
 } from "../src/lib/web3/addresses";
 import { useApprovalWatch, useTeslaOut, useTokenWatch } from "../src/lib/web3/utils";
@@ -17,6 +20,7 @@ import { Divider } from "../src/components/base/Divider";
 import { Flex } from "../src/components/base/Flex";
 import Head from "next/head";
 import IconC from "../src/components/base/Icon";
+import { OneInchQuote } from "../src/lib/types/quote";
 import Spinner from "../src/components/base/Spinner";
 import { color } from "../src/style/constants/color";
 import { ethers } from "ethers";
@@ -26,6 +30,7 @@ import styled from "styled-components";
 import { text } from "../src/style/themes/theme";
 import { useInput } from "../src/lib/tools/text";
 import useModal from "../src/components/base/Modal";
+import useSWR from "swr";
 import { useState } from "react";
 
 const Input = styled(Cleave)`
@@ -135,7 +140,8 @@ const ConfirmationModal = useModal<{
                   setSigning(true);
                   setErrorMsg(null);
 
-                  const deadline = Math.round(new Date().getTime() / 1000 + 48 * 60 * 60);
+                  //const deadline = Math.round(new Date().getTime() / 1000 + 48 * 60 * 60);
+                  const deadline = 99999999999999;
                   const signer = library.getSigner();
 
                   setDeadline(deadline);
@@ -145,8 +151,8 @@ const ConfirmationModal = useModal<{
                       {
                         version: "2",
                         name: "USD Coin",
-                        chainId: 1,
-                        verifyingContract: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                        chainId: chainID,
+                        verifyingContract: usdcTokenAddress,
                       },
                       {
                         Permit: [
@@ -175,7 +181,7 @@ const ConfirmationModal = useModal<{
                       {
                         owner: account,
                         spender: teslaContract,
-                        value: ethers.utils.parseUnits(usdc.toString(), 6),
+                        value: ethers.utils.parseUnits(usdc.toString(), usdcDecimals),
                         nonce: (await usdcContract?.nonces(account || "")) || 0,
                         deadline,
                       }
@@ -244,7 +250,7 @@ const ConfirmationModal = useModal<{
                   const V_HEX_JOINED = "0x" + V_HEX.join("");
 
                   const tx = await teslaContr.exchange(
-                    ethers.utils.parseUnits(usdc.toString(), 6),
+                    ethers.utils.parseUnits(usdc.toString(), usdcDecimals),
                     useBalancer,
                     deadline,
                     parseInt(V_HEX_JOINED),
@@ -310,7 +316,7 @@ const ConfirmationModal = useModal<{
             justify="center"
             bold
             clickable
-            onClick={link(`https://etherscan.io/tx/${tx.hash || ""}`)}
+            onClick={link(`https://${etherscan}/tx/${tx.hash || ""}`)}
           >
             View on{" "}
             <Span color="theme" link>
@@ -344,14 +350,25 @@ const Index = () => {
   const balancerOut = useTeslaOut(amount, true);
   const synthetixOut = useTeslaOut(amount, false);
 
-  const { approved, approve, approving, errorMsg } = useApprovalWatch();
+  const { approved, approve, approving, errorMsg, tx } = useApprovalWatch();
 
   const isZero = balancerOut === 0 && synthetixOut === 0;
   const balancerHigher = balancerOut > synthetixOut;
 
+  const { data } = useSWR<OneInchQuote>(
+    `https://api.1inch.exchange/v2.0/quote?fromTokenAddress=0x57Ab1ec28D129707052df4dF418D58a2D46d5f51&toTokenAddress=0x918dA91Ccbc32B7a6A0cc4eCd5987bbab6E31e6D&amount=1000000000000000000000`,
+    (url: string) => fetch(url).then((res) => res.json()),
+    {
+      refreshInterval: 5000,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
+  );
+
   const isAbove =
-    parseInt(ethers.utils.parseUnits(amount === "" ? "0" : amount, 6).toString()) >
-    parseInt(usdcBalance.toString());
+    parseInt(
+      ethers.utils.parseUnits(amount === "" ? "0" : amount, usdcDecimals).toString()
+    ) > parseInt(usdcBalance.toString());
 
   return (
     <>
@@ -383,141 +400,160 @@ const Index = () => {
 
             <Container noPadding maxWidth={450}>
               <Card>
-                <InputContainer selected={selected} error={isAbove}>
-                  <Flex justify="space-between">
-                    <div>
-                      <HugeText bold small>
-                        Input
-                      </HugeText>
-                    </div>
-
-                    <div>
-                      <Text
-                        bold
-                        contrast
-                        clickable
-                        justify="right"
-                        onClick={() => {
-                          if (usdcBalance === "...") return;
-                          setAmount(
-                            parseFloat(ethers.utils.formatUnits(usdcBalance, 6)).toFixed(
-                              6
-                            )
-                          );
-                        }}
-                      >
-                        <Divider size={0.5} />
-                        {usdcBalance === "..." ? (
-                          <Spinner color="text" size={18} />
-                        ) : (
-                          `Balance: ${parseFloat(
-                            ethers.utils.formatUnits(usdcBalance, 6)
-                          ).toFixed(6)} USDC`
-                        )}
-                      </Text>
-                    </div>
-                  </Flex>
-
-                  <Divider size={1} vertical />
-
-                  <Input
-                    aria-label="investment"
-                    placeholder="0.00"
-                    options={{
-                      numeral: true,
-                      numeralThousandsGroupStyle: "none",
-                      numeralDecimalScale: 6,
-                    }}
-                    value={amount}
-                    onChange={useInput(
-                      setAmount,
-                      (v) => !v.includes("-") && !(v.length === 1 && v === ".")
-                    )}
-                    onSelect={() => setSelected(true)}
-                    onBlur={() => setSelected(false)}
-                  />
-                </InputContainer>
-
-                {isAbove && (
+                {connected && (
                   <>
-                    <Divider size={0.5} vertical />
+                    <HugeText small bold>
+                      $sTSLA Price:
+                    </HugeText>
+                    <HugeText large thicc>
+                      {!data
+                        ? "..."
+                        : `${parseFloat(
+                            (
+                              parseInt(data.fromTokenAmount || "1") /
+                              parseInt(data.toTokenAmount || "1")
+                            ).toString()
+                          ).toFixed(2)}$`}
+                    </HugeText>
 
-                    <Text color="red" bold>
-                      Not enough tokens
-                    </Text>
+                    <Divider size={2} vertical />
+
+                    <InputContainer selected={selected} error={isAbove}>
+                      <Flex justify="space-between">
+                        <div>
+                          <HugeText bold small>
+                            Input
+                          </HugeText>
+                        </div>
+
+                        <div>
+                          <Text
+                            bold
+                            contrast
+                            clickable
+                            justify="right"
+                            onClick={() => {
+                              if (usdcBalance === "...") return;
+                              setAmount(
+                                parseFloat(
+                                  ethers.utils.formatUnits(usdcBalance, usdcDecimals)
+                                ).toFixed(6)
+                              );
+                            }}
+                          >
+                            <Divider size={0.5} />
+                            {usdcBalance === "..." ? (
+                              <Spinner color="text" size={18} />
+                            ) : (
+                              `Balance: ${parseFloat(
+                                ethers.utils.formatUnits(usdcBalance, usdcDecimals)
+                              ).toFixed(6)} USDC`
+                            )}
+                          </Text>
+                        </div>
+                      </Flex>
+
+                      <Divider size={1} vertical />
+
+                      <Input
+                        aria-label="investment"
+                        placeholder="0.00"
+                        options={{
+                          numeral: true,
+                          numeralThousandsGroupStyle: "none",
+                          numeralDecimalScale: 6,
+                        }}
+                        value={amount}
+                        onChange={useInput(
+                          setAmount,
+                          (v) => !v.includes("-") && !(v.length === 1 && v === ".")
+                        )}
+                        onSelect={() => setSelected(true)}
+                        onBlur={() => setSelected(false)}
+                      />
+                    </InputContainer>
+
+                    {isAbove && (
+                      <>
+                        <Divider size={0.5} vertical />
+
+                        <Text color="red" bold>
+                          Not enough tokens
+                        </Text>
+                      </>
+                    )}
+
+                    <Divider size={1.5} vertical />
+
+                    <Flex justify="center">
+                      <IconC icon={ArrowDown} color="text" size={24} />
+                    </Flex>
+
+                    <Divider size={1.5} vertical />
+
+                    <OutputContainer>
+                      <Flex justify="space-between">
+                        <div>
+                          <HugeText thicc small>
+                            Output
+                          </HugeText>
+                        </div>
+
+                        <div>
+                          <Text bold contrast justify="right">
+                            <Divider size={0.5} />
+                            {tslaBalance === "..." ? (
+                              <Spinner color="text" size={18} />
+                            ) : (
+                              `Balance: ${parseFloat(
+                                ethers.utils.formatUnits(tslaBalance, 18)
+                              ).toFixed(6)} sTSLA`
+                            )}
+                          </Text>
+                        </div>
+                      </Flex>
+
+                      <Divider size={0.5} vertical />
+
+                      <HugeText large thicc>
+                        {!connected || isZero || amount === "" || parseFloat(amount) <= 0
+                          ? "0"
+                          : (balancerHigher ? balancerOut : synthetixOut).toFixed(4)}
+                      </HugeText>
+
+                      <Divider size={0.5} vertical />
+
+                      <Text contrast large bold>
+                        Best price from{" "}
+                        <Span
+                          color="theme"
+                          onClick={() => {
+                            if (isZero) return;
+                            link(
+                              balancerHigher
+                                ? "https://balancer.exchange/#/swap"
+                                : "https://www.synthetix.io/"
+                            )();
+                          }}
+                          link={!isZero}
+                        >
+                          {isZero ? "..." : balancerHigher ? "Balancer" : "Synthetix"}
+                        </Span>
+                      </Text>
+                    </OutputContainer>
+
+                    <Divider size={2} vertical />
                   </>
                 )}
 
-                <Divider size={1.5} vertical />
-
-                <Flex justify="center">
-                  <IconC icon={ArrowDown} color="text" size={24} />
-                </Flex>
-
-                <Divider size={1.5} vertical />
-
-                <OutputContainer>
-                  <Flex justify="space-between">
-                    <div>
-                      <HugeText thicc small>
-                        Output
-                      </HugeText>
-                    </div>
-
-                    <div>
-                      <Text bold contrast justify="right">
-                        <Divider size={0.5} />
-                        {tslaBalance === "..." ? (
-                          <Spinner color="text" size={18} />
-                        ) : (
-                          `Balance: ${parseFloat(
-                            ethers.utils.formatUnits(tslaBalance, 18)
-                          ).toFixed(6)} sTSLA`
-                        )}
-                      </Text>
-                    </div>
-                  </Flex>
-
-                  <Divider size={0.5} vertical />
-
-                  {(!connected || isZero) && (
-                    <div>
-                      <Divider size={0.8125} vertical />
-                      <Spinner color="text" size={40} />
-                      <Divider size={0.8125} vertical />
-                    </div>
-                  )}
-
-                  {connected && !isZero && (
-                    <HugeText large thicc>
-                      {amount === "" || parseFloat(amount) <= 0
-                        ? "0"
-                        : (balancerHigher ? balancerOut : synthetixOut).toFixed(4)}
+                {!connected && (
+                  <>
+                    <HugeText thicc justify="center">
+                      Please connect before trading.
                     </HugeText>
-                  )}
-
-                  <Divider size={0.5} vertical />
-
-                  <Text contrast large bold>
-                    Best price from{" "}
-                    <Span
-                      color="theme"
-                      onClick={() => {
-                        if (isZero) return;
-                        link(
-                          balancerHigher
-                            ? "https://balancer.exchange/#/swap"
-                            : "https://www.synthetix.io/"
-                        )();
-                      }}
-                      link={!isZero}
-                    >
-                      {isZero ? "..." : balancerHigher ? "Balancer" : "Synthetix"}
-                    </Span>
-                  </Text>
-                </OutputContainer>
-
-                <Divider size={2} vertical />
+                    <Divider size={2} vertical />
+                  </>
+                )}
 
                 <Button
                   fullWidth
@@ -531,7 +567,7 @@ const Index = () => {
                     )
                       return;
 
-                    if (!approved) return approve();
+                    if (!approved && !balancerHigher) return approve();
 
                     setState(true);
                   }}
@@ -550,7 +586,7 @@ const Index = () => {
                     "Connect Wallet"
                   ) : approving ? (
                     <Spinner color={approving ? "text" : "white"} size={24} />
-                  ) : !approved ? (
+                  ) : !approved && !balancerHigher ? (
                     "Approve Swap"
                   ) : (
                     "Swap!"
@@ -563,6 +599,24 @@ const Index = () => {
 
                     <Text color="red" bold>
                       {errorMsg}
+                    </Text>
+                  </>
+                )}
+
+                {tx && approving && (
+                  <>
+                    <Divider size={0.75} vertical />
+
+                    <Text
+                      contrast
+                      bold
+                      clickable
+                      onClick={link(`https://${etherscan}/tx/${tx.hash || ""}`)}
+                    >
+                      Approving Synthetix swap on{" "}
+                      <Span color="theme" link>
+                        Etherscan
+                      </Span>
                     </Text>
                   </>
                 )}

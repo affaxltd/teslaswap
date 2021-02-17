@@ -1,10 +1,10 @@
 import { H1Text, Text } from "../src/components/base/Text";
 
+import BaseLink from "../src/components/base/BaseLink";
 import Button from "../src/components/base/Button";
 import Container from "../src/components/base/Container";
 import Head from "next/head";
 import Horizontal from "../src/components/base/Horizontal";
-import Link from "next/link";
 import Vertical from "../src/components/base/Vertical";
 import styled from "styled-components";
 
@@ -54,9 +54,9 @@ const FourOhFour = () => (
           </Container>
 
           <Horizontal flex>
-            <Link href="/">
+            <BaseLink href="/">
               <Button color="theme">Return Home</Button>
-            </Link>
+            </BaseLink>
           </Horizontal>
         </Content>
       </Vertical>

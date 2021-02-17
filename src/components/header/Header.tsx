@@ -1,8 +1,9 @@
+import BaseLink from "../base/BaseLink";
 import Container from "../base/Container";
 import { Divider } from "../base/Divider";
-import Link from "next/link";
 import React from "react";
 import WalletButton from "./WalletButton";
+import { siteName } from "../../data/site";
 import styled from "styled-components";
 import { text } from "../../style/themes/theme";
 
@@ -40,13 +41,13 @@ const Header = () => (
   <Head>
     <Container>
       <HeaderWrapper>
-        <Link href="/">
+        <BaseLink href="/">
           <Title>
-            <Logo src="/logo/Logo.png" alt="" />
+            <Logo src="logo/Logo.png" alt="" />
             <Divider size={0.5} />
-            Stonks
+            {siteName}
           </Title>
-        </Link>
+        </BaseLink>
 
         <WalletButton />
       </HeaderWrapper>

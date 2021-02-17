@@ -9,7 +9,7 @@ export const GlobalStyles = createGlobalStyle`
     transition-property: box-shadow, background-color, border-color, color, fill, stroke;
     transition-duration: 175ms;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Inter var', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   body > img {

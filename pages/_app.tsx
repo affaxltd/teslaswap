@@ -2,7 +2,6 @@ import "normalize.css/normalize.css";
 import "isomorphic-fetch";
 import "nprogress/nprogress.css";
 import "../src/lib/tools/nprogress";
-import "../src/style/font.css";
 
 import { AppProps } from "next/app";
 import { GlobalStyles } from "../src/style/globalStyle";
@@ -31,7 +30,6 @@ const App = ({ Component, pageProps }: AppProps) => (
   <>
     <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <link rel="icon" href="/logo/Logo.png" />
     </Head>
 
     <RootProvider>

@@ -19,6 +19,7 @@ import Spinner from "../components/base/Spinner";
 import { Text } from "../components/base/Text";
 import Vertical from "../components/base/Vertical";
 import { createPortal } from "react-dom";
+import { dev } from "../lib/web3/addresses";
 import { ethers } from "ethers";
 import { getColor } from "../style/constants/color";
 import { providers } from "../lib/web3/providers";
@@ -88,7 +89,7 @@ const XIcon = Iconify(X);
 
 const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<any | null>(null);
   const [loading, setLoading] = useState(-1);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const root = useRoot();
@@ -131,8 +132,9 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
       try {
         await activate(providers[loading].connector, undefined, true);
         setOpen(false);
-      } catch (_e) {
-        setError(true);
+      } catch (e) {
+        setError(e);
+        console.log(e);
       }
     })();
   }, [loading]);
@@ -143,7 +145,7 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
         value={{
           open: () => {
             setOpen(true);
-            setError(false);
+            setError(null);
             setLoading(-1);
           },
         }}
@@ -188,7 +190,7 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                                 <ActiveProvider>
                                   <Text flex>
                                     <img
-                                      src={`/connectors/${activeProvider.logo}.png`}
+                                      src={`connectors/${activeProvider.logo}.png`}
                                       alt=""
                                       width={24}
                                       height={24}
@@ -228,7 +230,7 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                                   fullWidth
                                 >
                                   <ButtonImg
-                                    src={`/connectors/${provider.logo}.png`}
+                                    src={`connectors/${provider.logo}.png`}
                                     alt=""
                                     large
                                   />
@@ -285,7 +287,10 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                               color={error ? "red" : loadingActive ? "green" : undefined}
                             >
                               {error ? (
-                                "Connection error"
+                                `Connected to the wrong chain. Please use ${dev(
+                                  "Mainnet",
+                                  "Kovan"
+                                )}`
                               ) : loadingActive ? (
                                 "Connected"
                               ) : (
@@ -308,7 +313,7 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                               <>
                                 <BackButton
                                   onClick={() => {
-                                    setError(false);
+                                    setError(null);
                                     setLoading(-1);
                                   }}
                                 >
