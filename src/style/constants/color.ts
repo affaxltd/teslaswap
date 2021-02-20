@@ -39,6 +39,13 @@ const colorMap = new Map<Colors, Color>([
       dark: "#CCCCCC",
     },
   ],
+  [
+    "text",
+    {
+      normal: "#000000",
+      dark: "#000000",
+    },
+  ],
 ]);
 
 export const color: ColorFunction = (c) => (props) => {

@@ -1,4 +1,5 @@
 import { ArrowCircleUpOutline, ArrowDown } from "heroicons-react";
+import { BigNumber, ethers, utils } from "ethers";
 import { H1Text, H3Text, HugeText, Span, Text } from "../src/components/base/Text";
 import { SentTransaction, useERC20Abi, useTeslaAbi } from "../src/lib/web3/contract";
 import {
@@ -23,11 +24,12 @@ import IconC from "../src/components/base/Icon";
 import { OneInchQuote } from "../src/lib/types/quote";
 import Spinner from "../src/components/base/Spinner";
 import { color } from "../src/style/constants/color";
-import { ethers } from "ethers";
 import { link } from "../src/lib/tools/link";
 import { memeShadow } from "../src/style/constants/shadow";
 import styled from "styled-components";
 import { text } from "../src/style/themes/theme";
+import toast from "react-hot-toast";
+import { toastStyle } from "../src/style/toastStyle";
 import { useInput } from "../src/lib/tools/text";
 import useModal from "../src/components/base/Modal";
 import useSWR from "swr";
@@ -259,6 +261,22 @@ const ConfirmationModal = useModal<{
                   );
 
                   setTx(tx);
+
+                  const receipt = await tx.wait(1);
+                  const events = receipt.events || [];
+                  const event = events[events.length - 1];
+                  const result = utils.defaultAbiCoder.decode(
+                    ["uint256", "uint256"],
+                    event.data
+                  );
+                  const number = result[1] as BigNumber;
+
+                  toast.success(
+                    `Successfully swapped ${usdc} USDC for ${parseFloat(
+                      utils.formatUnits(number, 18)
+                    ).toFixed(6)} sTSLA!`,
+                    toastStyle
+                  );
                 } catch (e) {
                   const msg = (() => {
                     switch (e.code) {
@@ -343,7 +361,7 @@ const Index = () => {
   const [selected, setSelected] = useState(false);
 
   const usdcBalance = useTokenWatch(usdcTokenAddress);
-  const tslaBalance = useTokenWatch(teslaTokenAddress);
+  const tslaBalance = useTokenWatch(teslaTokenAddress[0]);
 
   const connected = active && !error;
 

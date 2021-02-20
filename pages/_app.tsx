@@ -9,6 +9,7 @@ import Head from "next/head";
 import Header from "../src/components/header/Header";
 import RootProvider from "../src/state/RootProvider";
 import ThemeProvider from "../src/state/ThemeProvider";
+import { Toaster } from "react-hot-toast";
 import WalletProvider from "../src/state/WalletProvider";
 import WaveBG from "../src/components/stylistic/WaveBG";
 import styled from "styled-components";
@@ -34,6 +35,7 @@ const App = ({ Component, pageProps }: AppProps) => (
 
     <RootProvider>
       <ThemeProvider>
+        <Toaster />
         <GlobalStyles />
 
         <WalletProvider>

@@ -11,6 +11,8 @@ import { delegateContract, teslaContract } from "./addresses";
 
 import { ethers } from "ethers";
 import { promisify } from "util";
+import { toast } from "react-hot-toast";
+import { toastStyle } from "../../style/toastStyle";
 import { useWeb3 } from "../../state/WalletProvider";
 
 const sleep = promisify(setTimeout);
@@ -61,7 +63,11 @@ export const useApprovalWatch = () => {
         const tx = await contract.approveExchangeOnBehalf(teslaContract);
         setTx(tx);
         await tx.wait();
-        await run();
+        const p = await run();
+
+        if (p) {
+          toast.success(`Successfully approved Swap!`, toastStyle);
+        }
       } catch (e) {
         const msg = (() => {
           switch (e.code) {
