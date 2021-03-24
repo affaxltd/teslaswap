@@ -2,6 +2,7 @@ import "normalize.css/normalize.css";
 import "isomorphic-fetch";
 import "nprogress/nprogress.css";
 import "../src/lib/tools/nprogress";
+import "../src/style/font.css";
 
 import { AppProps } from "next/app";
 import { GlobalStyles } from "../src/style/globalStyle";
@@ -19,6 +20,7 @@ const BodyDiv = styled.div`
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
+  overflow-x: hidden;
 `;
 
 const Content = styled.div`

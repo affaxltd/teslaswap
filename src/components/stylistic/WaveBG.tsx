@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { text } from "../../style/themes/theme";
+
+/*import { text } from "../../style/themes/theme";
 
 const WaveSVG = styled.svg`
   position: fixed;
@@ -13,10 +14,24 @@ const WaveSVG = styled.svg`
     stroke: ${text};
     stroke-miterlimit: 10;
   }
+`;*/
+
+const BGImage = styled.img`
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  opacity: 0.05;
+  z-index: -10;
 `;
 
 const WaveBG = () => (
-  <WaveSVG viewBox="0 0 1000.52 118.75">
+  <>
+    <BGImage src="art/radial.png" alt="" />
+
+    {/* <WaveSVG viewBox="0 0 1000.52 118.75">
     <path
       d="M.5,100c44.69-2,88.24-17,133-16.92,39.76,0,77.29,16.79,117,16.92,43.3.14,84.7-17.21,128-17,45.79.23,88.77,20.81,134.94,17,35.15-2.88,67.64,5.64,102.48,6.71C655.66,108,690,86.41,729,83.5,775.6,80,821.81,97.76,868.24,99.68c44.17,1.83,88.14-8.39,132.26-9.63"
       transform="translate(-0.48 -82.5)"
@@ -99,7 +114,8 @@ const WaveBG = () => (
     />
     <path d="M1,195.72q500,0,1000,0" transform="translate(-0.48 -82.5)" />
     <path d="M1,200.75q500,0,1000,0" transform="translate(-0.48 -82.5)" />
-  </WaveSVG>
+  </WaveSVG> */}
+  </>
 );
 
 export default WaveBG;

@@ -5,7 +5,6 @@ import React from "react";
 import WalletButton from "./WalletButton";
 import { siteName } from "../../data/site";
 import styled from "styled-components";
-import { text } from "../../style/themes/theme";
 
 const Head = styled.header`
   padding: 1.5rem 0;
@@ -19,7 +18,7 @@ const HeaderWrapper = styled.div`
 
 const Title = styled.p`
   display: flex;
-  color: ${text};
+  color: white;
   font-weight: 700;
   font-size: 2rem;
   line-height: 3.25rem;

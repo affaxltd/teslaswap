@@ -1,4 +1,5 @@
 import Button, { Iconify } from "./Button";
+import Card, { CardContainer } from "./Card";
 import React, {
   ComponentType,
   Dispatch,
@@ -8,8 +9,6 @@ import React, {
 } from "react";
 import { animated, useTransition } from "react-spring";
 
-import Card from "./Card";
-import { Divider } from "./Divider";
 import { Text } from "./Text";
 import Vertical from "./Vertical";
 import { X } from "heroicons-react";
@@ -26,7 +25,7 @@ const ModalHolder = styled(animated.div)`
   bottom: 0;
   left: 0;
   background-color: #00000090;
-  z-index: 10;
+  z-index: 20;
   transition: none;
 `;
 
@@ -39,8 +38,8 @@ const ModalCard = styled(Card)<{ width: number }>`
 
 const ExitHolder = styled.div`
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 2rem;
+  top: 1rem;
 `;
 
 const XIcon = Iconify(X);
@@ -118,12 +117,15 @@ export const useModal = <T extends unknown>(
                         )}
 
                         {header && (
-                          <>
+                          <CardContainer
+                            style={{
+                              marginBottom: "-1rem",
+                            }}
+                          >
                             <Text large bold>
                               {header}
                             </Text>
-                            <Divider size={1} vertical />
-                          </>
+                          </CardContainer>
                         )}
 
                         <Component

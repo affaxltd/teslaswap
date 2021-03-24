@@ -1,6 +1,5 @@
 import { color } from "./constants/color";
 import { createGlobalStyle } from "styled-components";
-import { primaryBg } from "./themes/theme";
 
 export const GlobalStyles = createGlobalStyle`
   * {
@@ -9,7 +8,7 @@ export const GlobalStyles = createGlobalStyle`
     transition-property: box-shadow, background-color, border-color, color, fill, stroke;
     transition-duration: 175ms;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Recursive', sans-serif;
   }
 
   body > img {
@@ -17,8 +16,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   html {
-    
-  background: ${primaryBg};
+    background: ${color("blue")};
   }
 
   #nprogress .bar {

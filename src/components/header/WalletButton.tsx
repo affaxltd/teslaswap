@@ -19,7 +19,7 @@ const WalletButton = () => {
   const { open } = useWallet();
 
   return active && account ? (
-    <Button color="transparent" onClick={open}>
+    <Button onClick={open}>
       <Flex
         style={{
           margin: "0 -0.25rem",
@@ -30,9 +30,7 @@ const WalletButton = () => {
       </Flex>
     </Button>
   ) : (
-    <Button color="transparent" onClick={open}>
-      Connect Wallet
-    </Button>
+    <Button onClick={open}>Connect Wallet</Button>
   );
 };
 

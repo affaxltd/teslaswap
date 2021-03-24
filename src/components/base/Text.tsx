@@ -11,17 +11,22 @@ type TType = keyof JSX.IntrinsicElements | ComponentType<any>;
 
 interface TextProps extends SizeProps {
   color?: Colors;
+  hexColor?: string;
   contrast?: boolean;
   flex?: boolean;
   nowrap?: boolean;
   wrap?: boolean;
   justify?: Justify;
+  thin?: boolean;
   bold?: boolean;
   thicc?: boolean;
   lineHeight?: number;
   uppercase?: boolean;
   clickable?: boolean;
   anywrap?: boolean;
+  badaboom?: boolean;
+  border?: Colors;
+  borderWidth?: number;
 }
 
 const map = sizeMap("medium", px, 12, 16, 20);
@@ -51,16 +56,25 @@ function Textify<T extends TType>(t: ThemedStyledFunction<T, any, {}, never>) {
     ${(props) => (props.anywrap ? "overflow-wrap: anywhere" : "")};
 
     ${(props) => (props.uppercase ? "text-transform: uppercase" : "")};
-    font-weight: ${(props) => (props.thicc ? 700 : props.bold ? 600 : 400)};
+    font-weight: ${(props) =>
+      props.thin ? 400 : props.thicc ? 800 : props.bold ? 700 : 600};
     font-size: ${map};
     color: ${(props) =>
-      props.color
+      props.hexColor ??
+      (props.color
         ? props.contrast
           ? darkColor(props.color)(props)
           : color(props.color)(props)
         : props.contrast
         ? contrastText(props)
-        : text(props)};
+        : text(props))};
+    ${(props) => (props.badaboom ? "font-family: Badaboom" : "")};
+    ${(props) =>
+      props.border
+        ? `-webkit-text-stroke: ${color(props.border)(props)} ${px(
+            props.borderWidth || 3
+          )}`
+        : ""};
   `;
 }
 
@@ -71,12 +85,13 @@ interface HugeProps {
   checkSize?: number;
 }
 
-const hugeMap = sizeMap("medium", px, 27.5, 35, 60);
+const hugeMap = sizeMap("medium", px, 25, 30, 70);
 
 function HugeTextify<T extends TType>(t: ThemedStyledFunction<T, any, {}, never>) {
   return styled(Textify(t))<HugeProps>`
     font-size: ${(props) => (props.enormous ? px(75) : hugeMap(props))} !important;
     font-weight: ${(props) => (props.thicc ? 800 : props.bold ? 600 : 400)} !important;
+    margin: 0;
 
     @media (max-width: ${(props) => px(props.widthCheck || 0)}) {
       font-size: ${(props) => px(props.checkSize || 0)} !important;

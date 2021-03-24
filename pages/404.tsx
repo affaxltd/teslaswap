@@ -3,6 +3,7 @@ import { H1Text, Text } from "../src/components/base/Text";
 import BaseLink from "../src/components/base/BaseLink";
 import Button from "../src/components/base/Button";
 import Container from "../src/components/base/Container";
+import { Divider } from "../src/components/base/Divider";
 import Head from "next/head";
 import Horizontal from "../src/components/base/Horizontal";
 import Vertical from "../src/components/base/Vertical";
@@ -52,6 +53,8 @@ const FourOhFour = () => (
               That page could not be located
             </H1Text>
           </Container>
+
+          <Divider size={2} vertical />
 
           <Horizontal flex>
             <BaseLink href="/">

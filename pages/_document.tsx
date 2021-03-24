@@ -47,8 +47,6 @@ export default class MyDocument extends Document {
         <Head>
           <script dangerouslySetInnerHTML={{ __html: scriptTxt }} />
 
-          <link rel="preload" href="fonts/Inter.woff2" as="font" crossOrigin="" />
-
           <meta name="application-name" content={siteName} />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
