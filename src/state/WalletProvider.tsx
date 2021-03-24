@@ -1,4 +1,5 @@
 import Button, { ButtonImg, Iconify } from "../components/base/Button";
+import Card, { CardContainer } from "../components/base/Card";
 import { CheckCircleOutline, ExclamationCircleOutline, X } from "heroicons-react";
 import React, {
   PropsWithChildren,
@@ -10,7 +11,7 @@ import React, {
 } from "react";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { animated, useTransition } from "react-spring";
-import { darkColor, getColor } from "../style/constants/color";
+import { color, getColor } from "../style/constants/color";
 
 import { Divider } from "../components/base/Divider";
 import Horizontal from "../components/base/Horizontal";
@@ -19,13 +20,13 @@ import Spinner from "../components/base/Spinner";
 import { Text } from "../components/base/Text";
 import Vertical from "../components/base/Vertical";
 import { createPortal } from "react-dom";
+import { dev } from "../lib/web3/addresses";
 import { ethers } from "ethers";
-import { largeShadow } from "../style/constants/shadow";
-import { primaryBg } from "../style/themes/theme";
 import { providers } from "../lib/web3/providers";
-import { radius } from "../style/constants/measurements";
+import { px } from "../style/helpers/measurements";
 import { springConfig } from "../style/constants/spring";
 import styled from "styled-components";
+import { text } from "../style/themes/theme";
 import { useOutsideAlerter } from "../lib/hooks/use-outside-alerter";
 import { useRoot } from "./RootProvider";
 
@@ -48,32 +49,23 @@ const ProviderHolder = styled(animated.div)`
   bottom: 0;
   left: 0;
   background-color: #00000090;
-  z-index: 10;
+  z-index: 20;
   transition: none;
 `;
 
-const ProviderCard = styled(Horizontal)`
+const ProviderCard = styled(Card)<{ width: number }>`
   position: relative;
-  background: ${primaryBg};
-  box-shadow: ${largeShadow};
-  border-radius: 1rem;
   width: 100%;
-  max-width: 26rem;
+  max-width: ${(props) => px(props.width)};
+  margin: 0 auto;
 `;
 
-const ProviderContent = styled.div`
-  padding: 1rem 1.75rem;
-`;
-
-const ProviderButton = styled(Button)`
-  border: 2px solid ${darkColor("transparent")};
-  margin-bottom: 1rem;
-  width: 100%;
+const ProviderButton = styled(Button)<{ index: number }>`
+  ${(props) => (props.index !== 0 ? "margin-top: 1rem" : "")};
 `;
 
 const BackButton = styled(Button)`
   width: 100%;
-  margin-bottom: 1rem;
 `;
 
 const HeaderHolder = styled.div`
@@ -82,22 +74,23 @@ const HeaderHolder = styled.div`
 `;
 
 const ActiveProvider = styled.div`
-  border: 2px solid ${darkColor("transparent")};
-  border-radius: ${radius};
+  border-radius: 1rem;
+  background: ${color("theme")};
+  border: 3px solid ${text};
   padding: 1rem;
 `;
 
 const ExitHolder = styled.div`
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 2rem;
+  top: 1rem;
 `;
 
 const XIcon = Iconify(X);
 
 const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<any | null>(null);
   const [loading, setLoading] = useState(-1);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const root = useRoot();
@@ -140,8 +133,9 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
       try {
         await activate(providers[loading].connector, undefined, true);
         setOpen(false);
-      } catch (_e) {
-        setError(true);
+      } catch (e) {
+        setError(e);
+        console.log(e);
       }
     })();
   }, [loading]);
@@ -152,7 +146,7 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
         value={{
           open: () => {
             setOpen(true);
-            setError(false);
+            setError(null);
             setLoading(-1);
           },
         }}
@@ -169,27 +163,28 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                 item && (
                   <ProviderHolder key={key} style={props}>
                     <Vertical>
-                      <ProviderCard ref={cardRef}>
+                      <ProviderCard width={400} ref={cardRef}>
                         <ExitHolder>
                           <Button
-                            radius={1}
                             color="transparent"
                             onClick={() => {
                               setOpen(false);
                             }}
+                            disableBorder
                           >
                             <XIcon crossOrigin="" path="" />
                           </Button>
                         </ExitHolder>
-                        <ProviderContent>
+
+                        <CardContainer>
                           <HeaderHolder>
-                            <Text lineHeight={3.2} large>
-                              {loading === -1 ? "Provider" : ""}
+                            <Text lineHeight={1.5} large bold>
+                              Provider
                             </Text>
                           </HeaderHolder>
+                        </CardContainer>
 
-                          <Divider size={0.5} vertical />
-
+                        <CardContainer color="yellow" top>
                           {loading === -1 && (
                             <>
                               {activeProvider && (
@@ -197,7 +192,7 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                                   <ActiveProvider>
                                     <Text flex>
                                       <img
-                                        src={`/connectors/${activeProvider.logo}.png`}
+                                        src={`connectors/${activeProvider.logo}.png`}
                                         alt=""
                                         width={24}
                                         height={24}
@@ -215,46 +210,49 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                                     <Text wrap>{account}</Text>
                                   </ActiveProvider>
 
-                                  <Divider size={1.5} vertical />
+                                  <Divider size={2} vertical />
                                 </>
                               )}
 
-                              {providers.map((provider, index) => {
-                                if (provider == activeProvider) return null;
-
-                                return (
-                                  <ProviderButton
-                                    color="transparent"
-                                    key={provider.name}
-                                    onClick={() => {
-                                      if (provider.connector === connector) return;
-                                      setLoading(index);
-                                    }}
-                                    justify="left"
-                                    large
-                                    textColorHex={provider.color}
-                                    active={false}
-                                  >
-                                    <ButtonImg
-                                      src={`/connectors/${provider.logo}.png`}
-                                      alt=""
+                              {providers
+                                .filter((provider) => provider !== activeProvider)
+                                .map((provider, index) => {
+                                  return (
+                                    <ProviderButton
+                                      index={index}
+                                      key={provider.name}
+                                      onClick={() => {
+                                        if (provider.connector === connector) return;
+                                        setLoading(index);
+                                      }}
                                       large
-                                    />
+                                      active={false}
+                                      fullWidth
+                                    >
+                                      <ButtonImg
+                                        src={`connectors/${provider.logo}.png`}
+                                        alt=""
+                                        large
+                                      />
 
-                                    {provider.name}
-                                  </ProviderButton>
-                                );
-                              })}
+                                      {provider.name}
+                                    </ProviderButton>
+                                  );
+                                })}
 
                               {active && (
                                 <ProviderButton
-                                  textColor="red"
-                                  color="transparent"
+                                  index={2}
                                   onClick={() => {
                                     deactivate();
                                   }}
+                                  fullWidth
                                 >
-                                  <XIcon crossOrigin="" path="" color={getColor("red")} />
+                                  <XIcon
+                                    crossOrigin=""
+                                    path=""
+                                    color={getColor("text")}
+                                  />
                                   <Divider size={0.25} />
                                   Disconnect
                                 </ProviderButton>
@@ -268,14 +266,14 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                                 {error ? (
                                   <IconC
                                     icon={ExclamationCircleOutline}
-                                    color={"red"}
+                                    color={"text"}
                                     size={80}
                                     sWidth={1}
                                   />
                                 ) : loadingActive ? (
                                   <IconC
                                     icon={CheckCircleOutline}
-                                    color={"green"}
+                                    color={"text"}
                                     size={80}
                                     sWidth={1}
                                   />
@@ -286,15 +284,12 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
 
                               <Divider size={1.5} vertical />
 
-                              <Text
-                                justify="center"
-                                large
-                                color={
-                                  error ? "red" : loadingActive ? "green" : undefined
-                                }
-                              >
+                              <Text justify="center" large color="text">
                                 {error ? (
-                                  "Connection error"
+                                  `Connected to the wrong chain. Please use ${dev(
+                                    "Mainnet",
+                                    "Kovan"
+                                  )}`
                                 ) : loadingActive ? (
                                   "Connected"
                                 ) : (
@@ -317,7 +312,7 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                                 <>
                                   <BackButton
                                     onClick={() => {
-                                      setError(false);
+                                      setError(null);
                                       setLoading(-1);
                                     }}
                                   >
@@ -327,7 +322,7 @@ const CustomProvider = ({ children }: PropsWithChildren<{}>) => {
                               )}
                             </>
                           )}
-                        </ProviderContent>
+                        </CardContainer>
                       </ProviderCard>
                     </Vertical>
                   </ProviderHolder>

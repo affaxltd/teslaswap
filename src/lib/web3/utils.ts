@@ -1,5 +1,6 @@
 import {
   CContract,
+  SentTransaction,
   UseContract,
   useDelegatorAbi,
   useERC20Abi,
@@ -10,6 +11,8 @@ import { delegateContract, teslaContract } from "./addresses";
 
 import { ethers } from "ethers";
 import { promisify } from "util";
+import { toast } from "react-hot-toast";
+import { toastStyle } from "../../style/toastStyle";
 import { useWeb3 } from "../../state/WalletProvider";
 
 const sleep = promisify(setTimeout);
@@ -34,6 +37,7 @@ export const useApprovalWatch = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const { library, error } = useWeb3();
   const contract = useDelegatorAbi(delegateContract, library?.getSigner());
+  const [tx, setTx] = useState<SentTransaction | null>();
 
   const { value, run } = useContractFunction(
     delegateContract,
@@ -48,6 +52,7 @@ export const useApprovalWatch = () => {
     approved: value,
     approving,
     errorMsg,
+    tx,
     approve: async () => {
       if (error || !contract || approving || !run) return;
 
@@ -56,8 +61,13 @@ export const useApprovalWatch = () => {
         setErrorMsg(null);
 
         const tx = await contract.approveExchangeOnBehalf(teslaContract);
+        setTx(tx);
         await tx.wait();
-        await run();
+        const p = await run();
+
+        if (p) {
+          toast.success(`Successfully approved Swap!`, toastStyle);
+        }
       } catch (e) {
         const msg = (() => {
           switch (e.code) {
@@ -73,6 +83,7 @@ export const useApprovalWatch = () => {
         setErrorMsg(msg);
       } finally {
         setApproving(false);
+        setTx(null);
       }
     },
   };

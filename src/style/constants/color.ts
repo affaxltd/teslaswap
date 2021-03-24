@@ -1,7 +1,15 @@
 import { Theme } from "../themes/theme";
 import { ThemedStyledProps } from "styled-components";
 
-export type Colors = "transparent" | "text" | "green" | "red" | "white" | "theme";
+export type Colors =
+  | "transparent"
+  | "text"
+  | "green"
+  | "red"
+  | "white"
+  | "yellow"
+  | "blue"
+  | "theme";
 
 export interface Color {
   normal: string;
@@ -28,8 +36,8 @@ const colorMap = new Map<Colors, Color>([
   [
     "theme",
     {
-      normal: "#1F69FF",
-      dark: "#0052F5",
+      normal: "#FF9900",
+      dark: "#eb8d00",
     },
   ],
   [
@@ -37,6 +45,27 @@ const colorMap = new Map<Colors, Color>([
     {
       normal: "#FFFFFF",
       dark: "#CCCCCC",
+    },
+  ],
+  [
+    "yellow",
+    {
+      normal: "#F7EF04",
+      dark: "#F7EF04",
+    },
+  ],
+  [
+    "blue",
+    {
+      normal: "#1F23DE",
+      dark: "#1F23DE",
+    },
+  ],
+  [
+    "text",
+    {
+      normal: "#000000",
+      dark: "#000000",
     },
   ],
 ]);

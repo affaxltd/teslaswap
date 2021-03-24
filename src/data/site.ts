@@ -1,6 +1,4 @@
-export const siteName = "Tesla Stonks";
+export const siteName = "StonkSwap";
 export const siteNameLong = `${siteName} Protocol`;
-export const siteUrl = "tesla.fi";
-export const siteUrlLong = `https://${siteUrl}/`;
-export const siteDescription = "Trade your USDC to sTSLA with a simple to use UI";
-export const siteBanner = "/images/banner/Banner.png";
+export const siteDescription =
+  "Trade your boring USDC for hot sTSLA with a simple to use UI";

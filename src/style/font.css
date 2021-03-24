@@ -1,17 +1,17 @@
 @font-face {
-  font-family: "Inter var";
+  font-family: "Recursive";
   font-weight: 100 900;
   font-display: swap;
   font-style: normal;
   font-named-instance: "Regular";
-  src: url("/fonts/Inter.woff2?v=3.15") format("woff2");
+  src: url("/fonts/Recursive.ttf");
 }
 
 @font-face {
-  font-family: "Roboto Slab";
+  font-family: "Badaboom";
   font-weight: 100 900;
   font-display: swap;
   font-style: normal;
   font-named-instance: "Regular";
-  src: url("/fonts/RobotoSlab.woff2?v=3.15") format("ttf");
+  src: url("/fonts/Badaboom.ttf");
 }

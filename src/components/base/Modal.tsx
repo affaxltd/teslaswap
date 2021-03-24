@@ -1,4 +1,5 @@
 import Button, { Iconify } from "./Button";
+import Card, { CardContainer } from "./Card";
 import React, {
   ComponentType,
   Dispatch,
@@ -8,47 +9,37 @@ import React, {
 } from "react";
 import { animated, useTransition } from "react-spring";
 
-import { Divider } from "./Divider";
-import Horizontal from "./Horizontal";
 import { Text } from "./Text";
 import Vertical from "./Vertical";
 import { X } from "heroicons-react";
 import { createPortal } from "react-dom";
-import { largeShadow } from "../../style/constants/shadow";
-import { primaryBg } from "../../style/themes/theme";
 import { px } from "../../style/helpers/measurements";
 import { springConfig } from "../../style/constants/spring";
 import styled from "styled-components";
 import { useRoot } from "../../state/RootProvider";
 
 const ModalHolder = styled(animated.div)`
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   background-color: #00000090;
-  z-index: 10;
+  z-index: 20;
   transition: none;
 `;
 
-const ModalCard = styled(Horizontal)<{ width: number }>`
+const ModalCard = styled(Card)<{ width: number }>`
   position: relative;
-  background: ${primaryBg};
-  box-shadow: ${largeShadow};
-  border-radius: 1rem;
   width: 100%;
   max-width: ${(props) => px(props.width)};
-`;
-
-const ModalContent = styled.div`
-  padding: 1.5rem;
+  margin: 0 auto;
 `;
 
 const ExitHolder = styled.div`
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 2rem;
+  top: 1rem;
 `;
 
 const XIcon = Iconify(X);
@@ -114,31 +105,35 @@ export const useModal = <T extends unknown>(
                         {!disableX && (
                           <ExitHolder>
                             <Button
-                              radius={1}
                               color="transparent"
                               onClick={() => {
                                 setOpen(false);
                               }}
+                              disableBorder
                             >
                               <XIcon crossOrigin="" path="" />
                             </Button>
                           </ExitHolder>
                         )}
-                        <ModalContent>
-                          {header && (
-                            <>
-                              <Text large>{header}</Text>
-                              <Divider size={1} vertical />
-                            </>
-                          )}
 
-                          <Component
-                            close={() => {
-                              setOpen(false);
+                        {header && (
+                          <CardContainer
+                            style={{
+                              marginBottom: "-1rem",
                             }}
-                            {...prop}
-                          />
-                        </ModalContent>
+                          >
+                            <Text large bold>
+                              {header}
+                            </Text>
+                          </CardContainer>
+                        )}
+
+                        <Component
+                          close={() => {
+                            setOpen(false);
+                          }}
+                          {...prop}
+                        />
                       </ModalCard>
                     </Vertical>
                   </ModalHolder>

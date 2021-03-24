@@ -1,9 +1,11 @@
 import { H1Text, Text } from "../src/components/base/Text";
 
+import BaseLink from "../src/components/base/BaseLink";
 import Button from "../src/components/base/Button";
 import Container from "../src/components/base/Container";
+import { Divider } from "../src/components/base/Divider";
+import Head from "next/head";
 import Horizontal from "../src/components/base/Horizontal";
-import Link from "next/link";
 import Vertical from "../src/components/base/Vertical";
 import styled from "styled-components";
 
@@ -31,6 +33,10 @@ const Content = styled.div`
 
 const FourOhFour = () => (
   <>
+    <Head>
+      <title>Page Not Found</title>
+    </Head>
+
     <BackroundHolder>
       <Vertical>
         <BackroundText contrast color="transparent" justify="center">
@@ -48,10 +54,12 @@ const FourOhFour = () => (
             </H1Text>
           </Container>
 
+          <Divider size={2} vertical />
+
           <Horizontal flex>
-            <Link href="/">
+            <BaseLink href="/">
               <Button color="theme">Return Home</Button>
-            </Link>
+            </BaseLink>
           </Horizontal>
         </Content>
       </Vertical>

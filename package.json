@@ -5,6 +5,7 @@
     "dev": "next -p 8808",
     "build": "next build",
     "start": "next start",
+    "export": "next build && next export",
     "lint": "tsc",
     "prettify": "yarn prettier --write \"**/*.{tsx,ts,js,jsx,json,md}\""
   },
@@ -23,13 +24,17 @@
     "heroicons-react": "^1.3.0",
     "isomorphic-fetch": "^3.0.0",
     "next": "latest",
+    "next-pwa": "^5.0.5",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "prettier-plugin-import-sort": "^0.0.6",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-hot-toast": "^1.0.2",
     "react-spring": "^8.0.27",
-    "styled-components": "^5.0.0"
+    "styled-components": "^5.0.0",
+    "swr": "^0.4.2",
+    "webpack": "^5.22.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.12.13",

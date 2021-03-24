@@ -16,7 +16,8 @@ const ThemeProvider = ({ children }: PropsWithChildren<{}>) => {
       window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
     const newTheme =
       parseInt(localStorage.getItem("theme") || (darkByDefault ? "1" : "0")) || 0;
-    setTheme(newTheme);
+    newTheme;
+    setTheme(0);
   }, []);
 
   return (

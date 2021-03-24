@@ -3,7 +3,6 @@ import { SizeProps, rem, sizeMap, sizeNoMap } from "../../style/helpers/measurem
 
 import { Icon } from "../../types/icon";
 import { StyleFunction } from "../../style";
-import { radius } from "../../style/constants/measurements";
 import styled from "styled-components";
 import { text } from "../../style/themes/theme";
 
@@ -13,11 +12,11 @@ interface ButtonProps extends SizeProps {
   color?: Colors;
   textColor?: Colors;
   textColorHex?: string;
-  radius?: number;
   active?: boolean;
   justify?: Justify;
   fullWidth?: boolean;
   inactive?: boolean;
+  disableBorder?: boolean;
 }
 
 interface IconProps extends SizeProps {
@@ -29,10 +28,11 @@ const bgColor: StyleFunction<ButtonProps> = (props) =>
 const hoverColor: StyleFunction<ButtonProps> = (props) =>
   darkColor(props.color || "theme")(props);
 
-const paddingMap = sizeNoMap("medium", "0 0.7rem", "0.6rem 0.8rem", "0.7rem 1rem");
-const fontSizeMap = sizeMap("medium", rem, 0.75, 1, 1.1);
-const lineHeightMap = sizeMap("medium", rem, 1.5, 2, 2.6);
-const heightMap = sizeMap("medium", rem, 2, 3.2, 4);
+const paddingMap = sizeNoMap("medium", "0 0.7rem", "0.6rem 0.8rem", "1.2rem 1rem");
+const fontSizeMap = sizeMap("medium", rem, 0.75, 1, 1.3);
+const lineHeightMap = sizeMap("medium", rem, 1.5, 2, 3);
+const heightMap = sizeMap("medium", rem, 2, 3.2, 4.6);
+const borderRadiusMap = sizeMap("medium", rem, 0.5, 0.5, 1);
 
 const Button = styled.button<ButtonProps>`
   display: flex;
@@ -50,16 +50,22 @@ const Button = styled.button<ButtonProps>`
       ? props.textColorHex || color(props.textColor || "text")(props)
       : props.color === "transparent"
       ? text(props)
-      : "white"};
+      : "black"};
 
   ${(props) => (props.fullWidth ? "width: 100%" : "")};
 
-  border-radius: ${(props) => (props.radius ? rem(props.radius) : radius(props))};
-  font-weight: 500;
+  font-weight: 700;
   padding: ${paddingMap};
   font-size: ${fontSizeMap};
   line-height: ${lineHeightMap};
   height: ${heightMap};
+  border-radius: ${borderRadiusMap};
+
+  ${(props) =>
+    props.disableBorder
+      ? ""
+      : `border: ${(props.inactive ? darkColor("transparent") : text)(props)} 3px
+    solid;`};
 
   &:hover {
     background: ${(props) =>

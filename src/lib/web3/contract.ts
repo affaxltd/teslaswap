@@ -1,9 +1,9 @@
-import { BigNumberish, Transaction, ethers } from "ethers";
+import { BigNumberish, ContractReceipt, Transaction, ethers } from "ethers";
 
 import { useMemo } from "react";
 
 export interface SentTransaction extends Transaction {
-  wait: (confirmations?: number) => Promise<void>;
+  wait: (confirmations?: number) => Promise<ContractReceipt>;
 }
 
 export type CContract<T> = (T & ethers.Contract) | null;
