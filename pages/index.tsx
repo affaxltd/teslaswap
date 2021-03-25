@@ -13,14 +13,12 @@ import {
 import { useApprovalWatch, useTeslaOut, useTokenWatch } from "../src/lib/web3/utils";
 import { useWallet, useWeb3 } from "../src/state/WalletProvider";
 
-import { ArrowCircleUpOutline } from "heroicons-react";
 import Button from "../src/components/base/Button";
 import Cleave from "cleave.js/react";
 import Container from "../src/components/base/Container";
 import { Divider } from "../src/components/base/Divider";
 import { Flex } from "../src/components/base/Flex";
 import Head from "next/head";
-import IconC from "../src/components/base/Icon";
 import { Inputify } from "../src/components/base/Input";
 import { OneInchQuote } from "../src/lib/types/quote";
 import Spinner from "../src/components/base/Spinner";
@@ -351,12 +349,6 @@ const ConfirmationModal = useModal<{
       {tx && (
         <>
           <CardContainer>
-            <Divider size={1} vertical />
-
-            <Flex justify="center">
-              <IconC icon={ArrowCircleUpOutline} color="text" size={128} sWidth={1} />
-            </Flex>
-
             <Divider size={2} vertical />
 
             <HugeText justify="center" small bold>
@@ -379,6 +371,17 @@ const ConfirmationModal = useModal<{
             </Text>
 
             <Divider size={3} vertical />
+
+            <Container maxWidth={300}>
+              <img
+                style={{
+                  width: "100%",
+                  marginBottom: "-10px",
+                }}
+                src="art/nicebob.png"
+                alt=""
+              />
+            </Container>
           </CardContainer>
 
           <CardContainer top color="yellow">
@@ -778,7 +781,14 @@ const Index = () => {
             <Divider size={0.5} vertical />
 
             <Flex justify="center">
-              <SynthetixLogo height={20} />
+              <div
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={link("https://synthetix.io/")}
+              >
+                <SynthetixLogo height={20} />
+              </div>
             </Flex>
 
             <Divider size={3} vertical />

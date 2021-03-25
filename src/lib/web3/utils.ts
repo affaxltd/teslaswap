@@ -7,7 +7,7 @@ import {
   useTeslaAbi,
 } from "./contract";
 import { DependencyList, useEffect, useState } from "react";
-import { delegateContract, teslaContract } from "./addresses";
+import { delegateContract, teslaContract, usdcDecimals } from "./addresses";
 
 import { ethers } from "ethers";
 import { promisify } from "util";
@@ -99,7 +99,7 @@ export const useTeslaOut = (amount: string, useBalancer: boolean) => {
         : parseFloat(
             ethers.utils.formatUnits(
               await (useBalancer ? contract.balancerOut : contract.syntheticsOut)(
-                ethers.utils.parseUnits(amount, 18)
+                ethers.utils.parseUnits(amount, usdcDecimals)
               ),
               18
             )
