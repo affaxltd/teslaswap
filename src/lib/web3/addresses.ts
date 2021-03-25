@@ -4,8 +4,8 @@ export const dev = <T, S extends T, U extends T>(a: S, b: U): S | U =>
 export const teslaTokenAddress = dev(
   ["0x918dA91Ccbc32B7a6A0cc4eCd5987bbab6E31e6D"],
   [
-    "0xC811087cb1d3Ef5889C4A9DF4432494A309152Bb",
-    "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
+    "0x1e0F16aAF78D8d40FecE6E17F5FE841879b21C4B",
+    "0x53A14CdBCE36F870461Ffc2cB0C9D63b0f4a297a",
   ]
 );
 
@@ -19,7 +19,10 @@ export const delegateContract = dev(
   "0xB8CFB40B4c66533cD8f760c1b15cc228452bB03E"
 );
 
-export const teslaContract = dev("tbd", "0x200bCfCB140C97ae556c9eaef1DdA9e7Ecc9E3Ad");
+export const teslaContract = dev(
+  "0xAc941dE5417b3De42e281D986F0A6bBAF4d4A285",
+  "0x6cbAB847C56edE940921e78daD468A7D20DbC8aC"
+);
 
 export const network = dev("mainnet", "kovan");
 export const etherscan = dev("etherscan.io", "kovan.etherscan.io");
