@@ -40,11 +40,40 @@ const MemeHolder = styled.div`
   position: relative;
   height: 12rem;
   user-select: none;
+
+  @media (max-width: 650px) {
+    height: 8rem;
+  }
+
+  @media (max-width: 470px) {
+    height: 6rem;
+  }
 `;
 
 const Meme = styled.img`
   height: 12rem;
   user-select: none;
+
+  @media (max-width: 650px) {
+    height: 8rem;
+  }
+
+  @media (max-width: 470px) {
+    height: 6rem;
+  }
+`;
+
+const MemeArrow = styled.img`
+  height: 5rem;
+  user-select: none;
+
+  @media (max-width: 650px) {
+    height: 3.5rem;
+  }
+
+  @media (max-width: 470px) {
+    height: 3rem;
+  }
 `;
 
 const FireGif = styled.img`
@@ -54,6 +83,14 @@ const FireGif = styled.img`
   left: -108%;
   top: -140%;
   user-select: none;
+
+  @media (max-width: 650px) {
+    height: 18rem;
+  }
+
+  @media (max-width: 470px) {
+    height: 13.5rem;
+  }
 `;
 
 const DoitGif = styled.img`
@@ -71,11 +108,6 @@ const PriceHolder = styled.div`
   z-index: 11;
   user-select: none;
   pointer-events: none;
-`;
-
-const MemeArrow = styled.img`
-  height: 5rem;
-  user-select: none;
 `;
 
 const PriceTagHolder = styled.div`
