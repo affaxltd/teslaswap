@@ -115,6 +115,11 @@ const PriceTagHolder = styled.div`
   height: 15rem;
   width: 15rem;
   transform: rotate(15deg);
+
+  @media (max-width: 650px) {
+    transform: rotate(15deg) scale(0.6);
+    margin-right: 1.25rem;
+  }
 `;
 
 const PriceTag = styled.img`
