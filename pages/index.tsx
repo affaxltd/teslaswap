@@ -409,10 +409,16 @@ const Index = () => {
   const balancerOut = useTeslaOut(amount, true);
   const synthetixOut = useTeslaOut(amount, false);
 
+  const priceBalancerOut = useTeslaOut("1", true);
+  const priceSynthetixOut = useTeslaOut("1", false);
+
   const { approved, approve, approving, errorMsg, tx } = useApprovalWatch();
 
   const isZero = balancerOut === 0 && synthetixOut === 0;
   const balancerHigher = balancerOut > synthetixOut;
+
+  const zeroPrice = priceBalancerOut === 0 && priceSynthetixOut === 0;
+  const balancerPrice = priceBalancerOut > priceSynthetixOut;
 
   const { data } = useSWR<OneInchQuote>(
     `https://api.1inch.exchange/v3.0/1/quote?fromTokenAddress=0x918dA91Ccbc32B7a6A0cc4eCd5987bbab6E31e6D&toTokenAddress=0x57Ab1ec28D129707052df4dF418D58a2D46d5f51&amount=${utils.parseUnits(
@@ -506,11 +512,15 @@ const Index = () => {
                       <Text justify="center">sTSLA Price</Text>
                       <HugeText justify="center" small thicc>
                         $
-                        {!data
+                        {!data && zeroPrice
                           ? "..."
-                          : parseFloat(utils.formatUnits(data.toTokenAmount, 18)).toFixed(
-                              2
-                            )}
+                          : zeroPrice
+                          ? parseFloat(
+                              utils.formatUnits((data ?? ({} as any)).toTokenAmount, 18)
+                            ).toFixed(2)
+                          : (
+                              1 / (balancerPrice ? priceBalancerOut : priceSynthetixOut)
+                            ).toFixed(2)}
                       </HugeText>
                     </div>
                   </Vertical>
