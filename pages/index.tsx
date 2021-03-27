@@ -19,6 +19,7 @@ import Container from "../src/components/base/Container";
 import { Divider } from "../src/components/base/Divider";
 import { Flex } from "../src/components/base/Flex";
 import Head from "next/head";
+import Horizontal from "../src/components/base/Horizontal";
 import { Inputify } from "../src/components/base/Input";
 import { OneInchQuote } from "../src/lib/types/quote";
 import Spinner from "../src/components/base/Spinner";
@@ -127,6 +128,17 @@ const PriceTag = styled.img`
   height: 15rem;
   width: 15rem;
   z-index: -1;
+`;
+
+const SponsorFlex = styled(Flex)`
+  @media (max-width: 650px) {
+    flex-wrap: wrap;
+
+    & > * {
+      flex-basis: 100%;
+      margin-top: 1rem;
+    }
+  }
 `;
 
 const ConfirmationModal = useModal<{
@@ -821,22 +833,67 @@ const Index = () => {
 
             <Divider size={3} vertical />
 
-            <Text large justify="center" color="white" thin>
-              Powered by
-            </Text>
+            <SponsorFlex justify="center">
+              <div>
+                <Text large justify="center" color="white" thin>
+                  Powered by
+                </Text>
 
-            <Divider size={0.5} vertical />
+                <Divider size={1} vertical />
 
-            <Flex justify="center">
-              <div
-                style={{
-                  cursor: "pointer",
-                }}
-                onClick={link("https://synthetix.io/")}
-              >
-                <SynthetixLogo height={20} />
+                <div>
+                  <Flex justify="center">
+                    <div
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      onClick={link("https://affax.link/synthetix")}
+                    >
+                      <Divider size={0.625} vertical />
+                      <SynthetixLogo height={20} />
+                    </div>
+                  </Flex>
+                </div>
               </div>
-            </Flex>
+
+              <Divider size={4} />
+
+              <div>
+                <Text large justify="center" color="white" thin>
+                  Sponsored by
+                </Text>
+
+                <Divider size={1} vertical />
+
+                <Flex justify="center">
+                  <div
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    onClick={link("https://affax.link/gdao")}
+                  >
+                    <Flex>
+                      <img
+                        src="art/gdao.png"
+                        style={{
+                          height: "40px",
+                        }}
+                      />
+
+                      <Divider size={0.5} />
+
+                      <div>
+                        <Vertical>
+                          <HugeText color="white" small thin clickable>
+                            grantsDAO
+                          </HugeText>
+                        </Vertical>
+                      </div>
+                    </Flex>
+                  </div>
+                </Flex>
+              </div>
+            </SponsorFlex>
 
             <Divider size={3} vertical />
           </Container>
