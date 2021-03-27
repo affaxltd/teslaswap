@@ -19,7 +19,6 @@ import Container from "../src/components/base/Container";
 import { Divider } from "../src/components/base/Divider";
 import { Flex } from "../src/components/base/Flex";
 import Head from "next/head";
-import Horizontal from "../src/components/base/Horizontal";
 import { Inputify } from "../src/components/base/Input";
 import { OneInchQuote } from "../src/lib/types/quote";
 import Spinner from "../src/components/base/Spinner";
