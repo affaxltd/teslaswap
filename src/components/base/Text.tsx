@@ -29,7 +29,7 @@ interface TextProps extends SizeProps {
   borderWidth?: number;
 }
 
-const map = sizeMap("medium", px, 12, 16, 20);
+const map = sizeMap("medium", px, 14, 16, 20);
 
 function Textify<T extends TType>(t: ThemedStyledFunction<T, any, {}, never>) {
   return t<TextProps>`

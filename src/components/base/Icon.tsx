@@ -283,13 +283,21 @@ interface SVGProps {
 
 const IconC = (
   props: PropsWithChildren<
-    { icon: Icon; color?: Colors; sWidth?: number; size?: number } & SVGProps
+    {
+      icon: Icon;
+      color?: Colors;
+      sWidth?: number;
+      size?: number;
+      clickable?: boolean;
+      onClick: () => void;
+    } & SVGProps
   >
 ) => {
-  const { children, icon, color: c, sWidth } = props;
+  const { children, icon, color: c, sWidth, clickable } = props;
 
   const Styled = styled(icon)`
     color: ${(props) => (c ? color(c)(props) : text(props))};
+    cursor: ${() => (clickable ? "pointer" : "normal")};
 
     & * {
       color: ${(props) => (c ? color(c)(props) : text(props))};

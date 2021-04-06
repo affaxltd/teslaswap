@@ -5,6 +5,7 @@ import "../src/lib/tools/nprogress";
 import "../src/style/font.css";
 
 import { AppProps } from "next/app";
+import { Banner } from "../src/components/header/Banner";
 import { GlobalStyles } from "../src/style/globalStyle";
 import Head from "next/head";
 import Header from "../src/components/header/Header";
@@ -44,6 +45,7 @@ const App = ({ Component, pageProps }: AppProps) => (
           <WaveBG />
 
           <BodyDiv>
+            <Banner />
             <Header />
             <Content>
               <Component {...pageProps} />
