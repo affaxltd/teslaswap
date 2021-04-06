@@ -289,7 +289,7 @@ const IconC = (
       sWidth?: number;
       size?: number;
       clickable?: boolean;
-      onClick: () => void;
+      onClick?: () => void;
     } & SVGProps
   >
 ) => {
