@@ -719,7 +719,7 @@ const Index = () => {
                             link(
                               balancerHigher
                                 ? "https://balancer.exchange/#/swap"
-                                : "https://www.synthetix.io/"
+                                : "https://kwenta.io/"
                             )();
                           }}
                           link={!isZero}

@@ -10,9 +10,6 @@ export interface Provider {
   logo: string;
 }
 
-const infuraUrl = (network: string) =>
-  `https://${network}.infura.io/v3/affe173c99ca4c36adfa8d3d0b49be77`;
-
 export const providers: Provider[] = [
   {
     connector: new InjectedConnector({
@@ -24,7 +21,7 @@ export const providers: Provider[] = [
   },
   {
     connector: new WalletConnectConnector({
-      rpc: { 1: infuraUrl("mainnet") },
+      rpc: { 1: process.env.API_URL! },
     }),
     color: "#3B99FC",
     name: "WalletConnect",
