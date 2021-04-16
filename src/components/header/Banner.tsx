@@ -36,7 +36,7 @@ export const Banner = () => {
         <div>
           <Vertical>
             <Text color="white" thin small>
-              Trade Responsibly and <strong>never share you private key</strong>
+              Trade responsibly and <strong>Never share your private key</strong>
             </Text>
           </Vertical>
         </div>
