@@ -36,8 +36,7 @@ export const Banner = () => {
         <div>
           <Vertical>
             <Text color="white" thin small>
-              App is still in beta and has unaudited code.{" "}
-              <strong>Use at your own risk.</strong>
+              App is still in beta, <strong>use at your own risk.</strong>
             </Text>
           </Vertical>
         </div>
